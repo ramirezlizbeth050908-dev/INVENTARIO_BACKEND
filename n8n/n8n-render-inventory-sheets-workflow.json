@@ -1,0 +1,330 @@
+{
+  "name": "Inventario Render → Google Sheets → Gmail",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "459bbfb2-935f-4ead-a97a-a2da9d2bf82f",
+      "name": "When clicking ‘Execute workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "ID_DE_TU_HOJA_GOOGLE",
+          "mode": "list",
+          "cachedResultName": "hoja de cliente api",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/ID_DE_TU_HOJA_GOOGLE/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/ID_DE_TU_HOJA_GOOGLE/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "982a6591-1d3c-4a77-9b81-3847d75f51b4",
+      "name": "Get row(s) in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        460,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "11b66f58-e869-4268-92a3-ea5b076c0357",
+              "leftValue": "={{$json.id}}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "a0acf450-6543-420c-837e-275047d77432",
+              "leftValue": "={{$json.id}}",
+              "rightValue": 25,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "looseTypeValidation": true
+        }
+      },
+      "id": "469eb696-8347-4832-9c80-b6e20ed21fc3",
+      "name": "Filter IDs disponibles en Render",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://items-api-pudp.onrender.com/items/{{$json.id}}",
+        "options": {}
+      },
+      "id": "707ab563-ed40-48b9-816d-7ab11908d536",
+      "name": "HTTP Request - Render",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        910,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "ID_DE_TU_HOJA_GOOGLE",
+          "mode": "list",
+          "cachedResultName": "hoja de cliente api",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/ID_DE_TU_HOJA_GOOGLE/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/ID_DE_TU_HOJA_GOOGLE/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{$json.id}}",
+            "Producto API": "={{$json.name}}",
+            "Descripción API": "={{$json.description}}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tipo",
+              "displayName": "Tipo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Imagen Frontal",
+              "displayName": "Imagen Frontal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Imagen Trasera",
+              "displayName": "Imagen Trasera",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Producto API",
+              "displayName": "Producto API",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "Descripción API",
+              "displayName": "Descripción API",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "id": "0fbc6059-3ca7-4f74-95d8-cb5f5aa3b8d2",
+      "name": "Update row in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1140,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "productos",
+        "options": {}
+      },
+      "id": "ef9716d4-d0cf-4c77-90ca-01d92f96910f",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1370,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "TU_CORREO_DE_DESTINO",
+        "subject": "Inventario consultado desde Render",
+        "emailType": "text",
+        "message": "={{'Consulta terminada. Se guardaron ' + $json.productos.length + ' productos de la API en Google Sheets.'}}",
+        "options": {}
+      },
+      "id": "e44d6c28-5ffd-4dbb-8b64-a04d6d4f29a1",
+      "name": "Send a message",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1600,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail OAuth2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter IDs disponibles en Render",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter IDs disponibles en Render": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Render",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Render": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
