@@ -1,0 +1,10 @@
+{
+  "name": "items-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "API REST Node.js con PostgreSQL para Docker, Render y n8n",
+  "main": "app/server.js",
+  "scripts": { "start": "node app/server.js" },
+  "engines": { "node": ">=20" },
+  "dependencies": { "pg": "^8.13.3" }
+}

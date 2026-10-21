@@ -1,0 +1,33 @@
+{
+  "name": "Items API - listar desde PostgreSQL",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "6a6d29a6-df00-4f86-87f9-43ff078a0061",
+      "name": "Iniciar manualmente",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://api:8000/items",
+        "options": {}
+      },
+      "id": "d71fce34-9a45-4eec-8f4e-f22c1121670c",
+      "name": "Obtener items",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [480, 300]
+    }
+  ],
+  "connections": {
+    "Iniciar manualmente": {
+      "main": [[{"node": "Obtener items", "type": "main", "index": 0}]]
+    }
+  },
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "versionId": "6ae6402b-d45e-4ad0-960c-e6bc4917e431"
+}
+
