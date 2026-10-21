@@ -7,6 +7,7 @@ API CRUD para recursos `items`, empaquetada con Docker y lista para n8n y Render
 ### Ejecutar con Docker Compose
 
 ```powershell
+docker volume create n8n_data
 docker compose up --build -d
 ```
 
@@ -17,6 +18,10 @@ docker compose up --build -d
 Endpoints: `GET/POST /items`, `GET/PUT/DELETE /items/{id}`. Los datos se conservan en `postgres_data`; n8n conserva su configuración en `n8n_data`.
 
 Para que n8n devuelva un registro distinto al cambiar el ID, importa el flujo y modifica el campo `id` del nodo **Cambiar ID aquí**. El nodo HTTP consulta `GET /items/{id}`. Cada `POST /items` crea un registro nuevo y PostgreSQL le asigna el siguiente ID; consulta `GET /items` para ver los IDs existentes.
+
+En el primer arranque, si la tabla está vacía, la API carga 25 productos de ejemplo con IDs del 1 al 25. Esta carga inicial ocurre una sola vez y no reemplaza datos existentes.
+
+En el primer arranque, si la tabla está vacía, la API carga 25 productos de ejemplo con IDs del 1 al 25. Esta carga inicial ocurre una sola vez y no reemplaza datos existentes.
 
 Ejemplo para crear un registro:
 
@@ -33,3 +38,4 @@ Importa `n8n/n8n-items-workflow.json`. El nodo HTTP consulta `http://api:8000/it
 ### Render
 
 El Blueprint `render.yaml` crea el servicio web y PostgreSQL administrado. Conecta este repositorio y despliega el Blueprint para obtener la URL pública del API. La URL de n8n local no sirve desde Render; en un flujo alojado fuera de Docker, configura el nodo HTTP con la URL pública del API.
+
