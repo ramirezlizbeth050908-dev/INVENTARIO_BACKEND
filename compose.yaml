@@ -38,4 +38,5 @@ services:
 volumes:
   postgres_data:
   n8n_data:
-
+    external: true
+    name: n8n_data
