@@ -4,6 +4,62 @@ const { Pool } = require('pg');
 
 const port = Number(process.env.PORT || 8000);
 const pool = new Pool({ connectionString: process.env.DATABASE_URL || 'postgresql://api:api_local_password@db:5432/api_db' });
+const demoProducts = [
+  ['Cuaderno profesional', 'Cuaderno de 100 hojas'],
+  ['Bolígrafo azul', 'Bolígrafo de tinta azul'],
+  ['Lápiz HB', 'Lápiz de grafito HB'],
+  ['Borrador blanco', 'Borrador para lápiz'],
+  ['Regla 30 cm', 'Regla escolar de 30 centímetros'],
+  ['Sacapuntas doble', 'Sacapuntas con depósito para lápices'],
+  ['Marcador negro', 'Marcador permanente de tinta negra'],
+  ['Marcador rojo', 'Marcador permanente de tinta roja'],
+  ['Resaltador amarillo', 'Resaltador fluorescente amarillo'],
+  ['Resaltador verde', 'Resaltador fluorescente verde'],
+  ['Tijeras escolares', 'Tijeras de punta redonda'],
+  ['Pegamento en barra', 'Adhesivo escolar en barra'],
+  ['Cinta adhesiva', 'Rollo de cinta transparente'],
+  ['Carpeta azul', 'Carpeta tamaño carta color azul'],
+  ['Carpeta roja', 'Carpeta tamaño carta color rojo'],
+  ['Juego de geometría', 'Kit escolar de geometría con transportador'],
+  ['Papel bond', 'Paquete de hojas blancas tamaño carta'],
+  ['Notas adhesivas', 'Bloc de notas adhesivas amarillas'],
+  ['Corrector líquido', 'Corrector líquido de secado rápido'],
+  ['Plumón verde', 'Plumón escolar de tinta verde'],
+  ['Plumón morado', 'Plumón escolar de tinta morada'],
+  ['Engrapadora', 'Engrapadora compacta para oficina'],
+  ['Caja de grapas', 'Grapas estándar para engrapadora'],
+  ['Clips metálicos', 'Caja con clips metálicos'],
+  ['Calculadora básica', 'Calculadora escolar de operaciones básicas']
+];
+
+async function seedDemoProducts() {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query('SELECT pg_advisory_xact_lock(78399101)');
+    const marker = await client.query("SELECT 1 FROM api_meta WHERE key = 'demo_products_v1'");
+    if (marker.rowCount === 0) {
+      const count = await client.query('SELECT COUNT(*)::int AS count FROM items');
+      if (count.rows[0].count === 0) {
+        const values = demoProducts.flatMap(([name, description], index) => [index + 1, name, description]);
+        const placeholders = demoProducts.map((_, index) => {
+          const first = index * 3 + 1;
+          return `($${first}, $${first + 1}, $${first + 2})`;
+        }).join(', ');
+        await client.query(`INSERT INTO items(id, name, description) VALUES ${placeholders}`, values);
+        await client.query("SELECT setval(pg_get_serial_sequence('items', 'id'), $1, true)", [demoProducts.length]);
+        console.log(`Cargados ${demoProducts.length} productos de ejemplo`);
+      }
+      await client.query("INSERT INTO api_meta(key) VALUES ('demo_products_v1') ON CONFLICT DO NOTHING");
+    }
+    await client.query('COMMIT');
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
 
 async function initializeDatabase() {
   for (let attempt = 1; attempt <= 30; attempt++) {
@@ -13,6 +69,11 @@ async function initializeDatabase() {
         name VARCHAR(200) NOT NULL,
         description TEXT
       )`);
+      await pool.query(`CREATE TABLE IF NOT EXISTS api_meta (
+        key TEXT PRIMARY KEY,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      )`);
+      await seedDemoProducts();
       return;
     } catch (error) {
       if (attempt === 30) throw error;
@@ -90,3 +151,4 @@ initializeDatabase().then(() => {
 });
 
 process.on('SIGTERM', async () => { server.close(); await pool.end(); process.exit(0); });
+
