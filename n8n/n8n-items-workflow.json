@@ -1,5 +1,5 @@
 {
-  "name": "Items API - listar desde PostgreSQL",
+  "name": "Items API - obtener por ID desde PostgreSQL",
   "nodes": [
     {
       "parameters": {},
@@ -11,23 +11,48 @@
     },
     {
       "parameters": {
-        "url": "http://api:8000/items",
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "71fc58ab-cf2c-4d05-99e5-081576c56df1",
+              "name": "id",
+              "value": 1,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": false,
+        "options": {}
+      },
+      "id": "574357e6-52d4-48b2-8ac9-f238bbd1afc4",
+      "name": "Cambiar ID aquí",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "=http://api:8000/items/{{$json.id}}",
         "options": {}
       },
       "id": "d71fce34-9a45-4eec-8f4e-f22c1121670c",
-      "name": "Obtener items",
+      "name": "Obtener item",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [480, 300]
+      "position": [680, 300]
     }
   ],
   "connections": {
     "Iniciar manualmente": {
-      "main": [[{"node": "Obtener items", "type": "main", "index": 0}]]
+      "main": [[{"node": "Cambiar ID aquí", "type": "main", "index": 0}]]
+    },
+    "Cambiar ID aquí": {
+      "main": [[{"node": "Obtener item", "type": "main", "index": 0}]]
     }
   },
   "active": false,
   "settings": {"executionOrder": "v1"},
   "versionId": "6ae6402b-d45e-4ad0-960c-e6bc4917e431"
 }
-
