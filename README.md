@@ -32,6 +32,8 @@ Para llamar a la API local dentro de Docker Compose, usa:
 http://api:8000/items/{{$json.id}}
 ```
 
+Para usar la integración de Sheets de ejemplo, importa `n8n/n8n-preparar-columnas-inventario.json` y ejecútalo una sola vez; luego importa `n8n/n8n-render-inventory-sheets-workflow.json`. La plantilla conserva las columnas previas y añade `Producto API` y `Descripción API` para los IDs del 1 al 25. Reemplaza `ID_DE_TU_HOJA_GOOGLE`, asigna tus credenciales de Google Sheets y Gmail, reconéctalas si n8n lo solicita y configura el destinatario antes de ejecutar el flujo.
+
 ## Render
 
 API desplegada: https://items-api-pudp.onrender.com
