@@ -1,0 +1,59 @@
+{
+  "name": "Preparar columnas Producto API (ejecutar una vez)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "fe0cf9cc-473f-4805-89ab-5123feb53dd5",
+      "name": "Iniciar preparación",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/ID_DE_TU_HOJA_GOOGLE:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleSheetsOAuth2Api",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "{\"requests\":[{\"insertDimension\":{\"range\":{\"sheetId\":0,\"dimension\":\"COLUMNS\",\"startIndex\":5,\"endIndex\":7},\"inheritFromBefore\":true}},{\"updateCells\":{\"rows\":[{\"values\":[{\"userEnteredValue\":{\"stringValue\":\"Producto API\"}},{\"userEnteredValue\":{\"stringValue\":\"Descripción API\"}}]}],\"start\":{\"sheetId\":0,\"rowIndex\":0,\"columnIndex\":5},\"fields\":\"userEnteredValue\"}}]}",
+        "options": {}
+      },
+      "id": "f0ce3b81-a82a-4b71-b9c8-25738c4ed70d",
+      "name": "Agregar dos columnas nuevas",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Iniciar preparación": {
+      "main": [
+        [
+          {
+            "node": "Agregar dos columnas nuevas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
