@@ -7,7 +7,10 @@
       "name": "Iniciar manualmente",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [240, 300]
+      "position": [
+        240,
+        300
+      ]
     },
     {
       "parameters": {
@@ -30,29 +33,53 @@
       "name": "Cambiar ID aquí",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
-      "position": [450, 300]
+      "position": [
+        450,
+        300
+      ]
     },
     {
       "parameters": {
-        "url": "=http://api:8000/items/{{$json.id}}",
+        "url": "=https://items-api-pudp.onrender.com/items/{{$json.id}}",
         "options": {}
       },
       "id": "d71fce34-9a45-4eec-8f4e-f22c1121670c",
       "name": "Obtener item",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [680, 300]
+      "position": [
+        680,
+        300
+      ]
     }
   ],
   "connections": {
     "Iniciar manualmente": {
-      "main": [[{"node": "Cambiar ID aquí", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Cambiar ID aquí",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Cambiar ID aquí": {
-      "main": [[{"node": "Obtener item", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Obtener item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
-  "settings": {"executionOrder": "v1"},
+  "settings": {
+    "executionOrder": "v1"
+  },
   "versionId": "6ae6402b-d45e-4ad0-960c-e6bc4917e431"
 }
